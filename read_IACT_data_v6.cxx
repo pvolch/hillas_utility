@@ -19,7 +19,7 @@
 using namespace std;
 char fou[90], month_year[70], fou_hillas[90],folder_outs[50];
 string line, folder;
-int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][23],pos[6][64][23],cluster[23], nn, anti_f[23], jj, jjj,j, x, gg;
+int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][23],pos[6][64][23], Nsos_array[64][23], cluster[23], nn, anti_f[23], jj, jjj,j, x, gg;
 int co, number_of_pixels;
 double pedp,sigp,b[64][23],bmp[64][23],ped[64][23],sig[64][23], e[23][64], sens[23][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
 string str,srr[23], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
@@ -214,6 +214,7 @@ int main(int argc, char **argv)
 		ist >> kk >> ii;
 		ist >> x_pos[ii][kk] >> y_pos[ii][kk] >> Nsos;
 		//cout << kk << "\t" << ii << "\t" << Nsos <<"\t\t";
+		Nsos_array[ii][kk] = Nsos;
 		int zi = 0;
 		for(int i = 0; i < 28; i++) {
 			//cout << kk <<" " << exclud_clust[i] <<"\t" << ii << " " << exclud_numb[i] << endl;
@@ -329,7 +330,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s%s%s%s%s%s%s%s%s%02.0f%s%02.0f%s%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(),"/", FolderList[jl].c_str(),".", RunNumbList[jl].c_str(), "_out_hillas_", edge1, "_", edge2, cleaning_type.c_str(), ".csv");
 		//cout << fou_hillas << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2], tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star" << endl;
+		fout_hillas << "por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2], tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star, edge" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			ifstream DataFileOuts;
@@ -553,7 +554,8 @@ int main(int argc, char **argv)
 										event.star_correction(bmp, kkk, pos);
 										event.get_hillas();
 										event.to_deg();
-										cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << endl;
+										event.get_edge(Nsos_array);
+										cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << " " << event.edge << endl;
 										fout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
 										vector_events.push_back(event);
 									}
@@ -589,7 +591,7 @@ int main(int argc, char **argv)
 					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
 					        vector_events[count].tel_ra << "," << vector_events[count].tel_dec << "," << vector_events[count].source_ra << "," <<
 					        vector_events[count].source_dec << "," << vector_events[count].source_x << "," << vector_events[count].source_y << "," <<
-					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << endl;
+					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << "," << vector_events[count].edge << endl;
 				}
 //por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], source_x, source_y, source_ra, source_dec, tracking, good
 				vector_events.clear();
