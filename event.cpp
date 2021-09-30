@@ -104,6 +104,15 @@ void star_correction(double b[64][23], int kkk[6][64][23], int pos[6][64][23]){
 		}
 	}
 }
+bool edge = 0;
+void get_edge(int Ns[64][23]){
+	for (int i = 0; i < pixel_number.size(); i++) {
+		if(Ns[pixel_number[i]][pixel_cluster[i]] != 6) {
+			edge = 1;
+			break;
+		}
+	}
+}
 
 double Xc[3];
 double Yc[3];
