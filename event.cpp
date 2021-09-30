@@ -18,11 +18,14 @@ unsigned int nsec_time;
 int number_of_pixels;
 double unix_time;
 double error_deg;
-double altitude;
+double tel_az;
+double tel_el;
 double tel_ra;
 double tel_dec;
 double source_ra;
 double source_dec;
+double source_az;
+double source_el;
 double source_x;
 double source_y;
 double star_x;
@@ -48,9 +51,6 @@ void set_event(int por, int event_number, double tim, unsigned int nst, vector<v
 
 void get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 	double ccd_unix_time;
-	int hh;
-	int mm;
-	int ss;
 	delta = inf;
 	id = -1;
 	for (int i = ccd_id; i < ccd_data[0].size(); i++) {
@@ -63,15 +63,15 @@ void get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 		}
 	}
 	ccd_unix_time = ccd_data[0][id];
-	hh =        ccd_data[1][id];
-	mm =        ccd_data[2][id];
-	ss =        ccd_data[3][id];
-	error_deg = ccd_data[4][id];
-	tel_ra =    ccd_data[5][id];
-	tel_dec =   ccd_data[6][id];
-	altitude =  ccd_data[7][id];
-	source_ra = ccd_data[8][id];
-	source_dec =ccd_data[9][id];
+	error_deg = ccd_data[1][id];
+	tel_ra =    ccd_data[2][id];
+	tel_dec =   ccd_data[3][id];
+	tel_az =    ccd_data[4][id];
+	tel_el =    ccd_data[5][id];
+	source_ra = ccd_data[6][id];
+	source_dec =ccd_data[7][id];
+	source_az = ccd_data[8][id];
+	source_el = ccd_data[9][id];
 	source_x =  ccd_data[10][id];
 	source_y =  ccd_data[11][id];
 	star_x =    ccd_data[12][id];
@@ -117,6 +117,10 @@ double con2;
 double con1;
 double amp_max;
 double size;
+double a_axis[3];
+double b_axis[3];
+double a_dist[3];
+double b_dist[3];
 
 void to_deg(){
 	Xc[0] = 0.1206*Xc[0];
@@ -165,6 +169,10 @@ void get_hillas(){
 	for(int i = 0; i < 3; i++) {
 		Xc[i] = 0;
 		Yc[i] = 0;
+		a_axis[i] = 0;
+		b_axis[i] = 0;
+		a_dist[i] = 0;
+		b_dist[i] = 0;
 		Xc2[i]=0;
 		Yc2[i]=0;
 		XYc[i]=0;
@@ -226,6 +234,8 @@ void get_hillas(){
 		sigy2[i] = Yc2[i] - pow(Yc[i],2);
 		sigxy[i] = XYc[i] - (Xc[i])*(Yc[i]);
 		d[i]=sigy2[i]-sigx2[i];
+		a_axis[i] = (d[i] + sqrt(pow(d[i],2) + 4*pow(sigxy[i], 2)))/(2*sigxy[i]);
+		b_axis[i] = Yc[i] - (a_axis[i]*Xc[i]);
 		z[i]=sqrt(pow(d[i],2)+4.*pow(sigxy[i],2));
 		length[i]=sqrt((sigx2[i] + sigy2[i] + z[i])/2.);
 		if(sigx2[i] + sigy2[i] - z[i] >= 0) {
@@ -258,6 +268,12 @@ void get_hillas(){
 			alpha[i]=asin(miss[i]/dist[i])*(180./Pi);
 		}
 	}
+	a_dist[0] = (Yc[0])/(Xc[0]);
+	b_dist[0] = 0;
+	a_dist[1] = (Yc[0]-source_y)/(Xc[0]-source_x);
+	b_dist[1] = source_y - a_dist[0]*source_x;
+	a_dist[2] = (Yc[0]+source_y)/(Xc[0]+source_x);
+	b_dist[2] = -source_y + a_dist[0]*source_x;
 }
 
 private:

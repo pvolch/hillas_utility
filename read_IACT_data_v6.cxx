@@ -329,7 +329,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s%s%s%s%s%s%s%s%s%02.0f%s%02.0f%s%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(),"/", FolderList[jl].c_str(),".", RunNumbList[jl].c_str(), "_out_hillas_", edge1, "_", edge2, cleaning_type.c_str(), ".csv");
 		//cout << fou_hillas << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star, unix time after dot(ns)" << endl;
+		fout_hillas << "por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2], tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			ifstream DataFileOuts;
@@ -572,8 +572,12 @@ int main(int argc, char **argv)
 				fout.close();
 				double por_cr = write_cr_file(vector_events);
 				for(int count = 0; count < vector_events.size(); count++) {
-					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << vector_events[count].unix_time << "," <<
-					        setprecision(6) << vector_events[count].delta << "," << setprecision(6) << vector_events[count].error_deg << "," << setprecision(6) << vector_events[count].altitude << "," <<
+					//"por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
+					//length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2],
+					//tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star"
+					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << vector_events[count].unix_time << "," << vector_events[count].nsec_time << "," <<
+					        setprecision(6) << vector_events[count].delta << "," << setprecision(6) << vector_events[count].error_deg << "," << setprecision(6) << vector_events[count].tel_az  << "," <<
+					        setprecision(6) << vector_events[count].tel_el << "," << setprecision(6) << vector_events[count].source_az << "," << setprecision(6) << vector_events[count].source_el << "," <<
 					        vector_events[count].cr_sec << "," << por_cr << "," << vector_events[count].number_of_pixels << "," <<
 					        vector_events[count].size << "," << vector_events[count].Xc[0] << "," << vector_events[count].Yc[0] << "," <<
 					        vector_events[count].con2 << "," << vector_events[count].length[0] << "," <<
@@ -581,9 +585,11 @@ int main(int argc, char **argv)
 					        vector_events[count].dist[2] << "," << vector_events[count].azwidth[1] << "," <<
 					        vector_events[count].azwidth[2] << "," << vector_events[count].miss[1] << "," << vector_events[count].miss[2] << "," <<
 					        vector_events[count].alpha[0] << "," << vector_events[count].alpha[1] << "," << vector_events[count].alpha[2] << "," <<
+					        vector_events[count].a_axis[0] << "," << vector_events[count].b_axis[0] << "," << vector_events[count].a_dist[1] << "," <<
+					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
 					        vector_events[count].tel_ra << "," << vector_events[count].tel_dec << "," << vector_events[count].source_ra << "," <<
 					        vector_events[count].source_dec << "," << vector_events[count].source_x << "," << vector_events[count].source_y << "," <<
-					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << "," << vector_events[count].nsec_time << endl;
+					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << endl;
 				}
 //por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], source_x, source_y, source_ra, source_dec, tracking, good
 				vector_events.clear();

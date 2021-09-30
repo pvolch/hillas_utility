@@ -101,9 +101,9 @@ vector <string> wobble(string param_wobble_path, double time_start, double time_
    vector <double> vector_tracking;
    vector <double> vector_zenit;
    vector <double> vector_good;*/
-vector<vector<double> > read_ccd(vector <string> vector_path){ //unix_time, hh, mm, ss, error_deg, tel_ra, tel_dec, altitude, source_ra, source_dec, source_x, source_y, star_x, star_y, tracking, good
+vector<vector<double> > read_ccd(vector <string> vector_path){ //читаемые из data_ccd столбцы //unix_time, error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az, source_el, source_x, source_y, star_x, star_y, tracking, good
 	vector<vector<double> > vector_ccd( 16, vector<double> (0));
-	int column[16] = {0,1,2,3,4,5,6,8,13,14,17,18,23,24,25,26}; //читаемые из data_ccd столбцы //unix_time, hh, mm, ss, error_deg, tel_ra, tel_dec, altitude, altitude, source_ra, source_dec, source_x, source_y, star_x, star_y, tracking, good
+	int column[16] = {0,4,5,6,7,8,13,14,15,16,17,18,23,24,25,26}; //читаемые из data_ccd столбцы //unix_time error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az, source_el, source_x, source_y, star_x, star_y, tracking, good
 	double x;
 	string source, line;
 	for(int jj = 0; jj < vector_path.size(); jj++) {
