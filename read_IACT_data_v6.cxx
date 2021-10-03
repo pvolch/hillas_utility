@@ -430,6 +430,34 @@ int main(int argc, char **argv)
 										istringstream ist(str);
 										ist >>  bmp[ii][f] >> x >> bmp[ii+1][f] >> x >> bmp[ii+2][f] >> x >> bmp[ii+3][f] >> x >>
 										bmp[ii+4][f] >> x >> bmp[ii+5][f] >> x >> bmp[ii+6][f] >> x >> bmp[ii+7][f] >> x;
+										if(IACT_numb == 0 && f == 17) {
+											bmp[58][17] = bmp[24][17];
+											bmp[59][17] = bmp[25][17];
+
+											bmp[50][17] = bmp[28][17];
+											bmp[51][17] = bmp[29][17];
+
+											bmp[56][17] = bmp[20][17];
+											bmp[57][17] = bmp[21][17];
+
+											ped[58][17] = ped[24][17];
+											ped[59][17] = ped[25][17];
+
+											ped[50][17] = ped[28][17];
+											ped[51][17] = ped[29][17];
+
+											ped[56][17] = ped[20][17];
+											ped[57][17] = ped[21][17];
+
+											sig[58][17] = sig[24][17];
+											sig[59][17] = sig[25][17];
+
+											sig[50][17] = sig[28][17];
+											sig[51][17] = sig[29][17];
+
+											sig[56][17] = sig[20][17];
+											sig[57][17] = sig[21][17];
+										}
 										//cout << bmp[6][6] << endl;
 										/*cout << setw(3) << left << bmp[ii][f] << "\t" << setw(3) << left << ped[ii][f] <<
 										   "\t" << setw(3) << left << bmp[ii+1][f] << "\t" << setw(3) << left << ped[ii+1][f] <<
@@ -577,20 +605,20 @@ int main(int argc, char **argv)
 					//"por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
 					//length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2],
 					//tel_ra, tel_dec, source_ra, source_dec, source_x, source_y, tracking, good, star"
-					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << vector_events[count].unix_time << "," << vector_events[count].nsec_time << "," <<
-					        setprecision(6) << vector_events[count].delta << "," << setprecision(6) << vector_events[count].error_deg << "," << setprecision(6) << vector_events[count].tel_az  << "," <<
-					        setprecision(6) << vector_events[count].tel_el << "," << setprecision(6) << vector_events[count].source_az << "," << setprecision(6) << vector_events[count].source_el << "," <<
-					        vector_events[count].cr_sec << "," << por_cr << "," << vector_events[count].number_of_pixels << "," <<
-					        vector_events[count].size << "," << vector_events[count].Xc[0] << "," << vector_events[count].Yc[0] << "," <<
-					        vector_events[count].con2 << "," << vector_events[count].length[0] << "," <<
+					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].unix_time << "," << vector_events[count].nsec_time << "," <<
+					        setprecision(2) << vector_events[count].delta << "," << setprecision(2) << vector_events[count].error_deg << "," << setprecision(5) << vector_events[count].tel_az  << "," <<
+					        setprecision(3) << vector_events[count].tel_el << "," << setprecision(5) << vector_events[count].source_az << "," << setprecision(3) << vector_events[count].source_el << "," <<
+					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," <<
+					        setprecision(2) << vector_events[count].size << "," << setprecision(6) << vector_events[count].Xc[0] << "," << setprecision(6) << vector_events[count].Yc[0] << "," <<
+					        setprecision(2) << vector_events[count].con2 << "," << setprecision(6) << vector_events[count].length[0] << "," <<
 					        vector_events[count].width[0] << "," << vector_events[count].dist[0] << "," << vector_events[count].dist[1] << "," <<
-					        vector_events[count].dist[2] << "," << vector_events[count].azwidth[1] << "," <<
+					        vector_events[count].dist[2] << "," << setprecision(3) << vector_events[count].azwidth[1] << "," <<
 					        vector_events[count].azwidth[2] << "," << vector_events[count].miss[1] << "," << vector_events[count].miss[2] << "," <<
-					        vector_events[count].alpha[0] << "," << vector_events[count].alpha[1] << "," << vector_events[count].alpha[2] << "," <<
-					        vector_events[count].a_axis[0] << "," << vector_events[count].b_axis[0] << "," << vector_events[count].a_dist[1] << "," <<
+					        setprecision(1) << vector_events[count].alpha[0] << "," << vector_events[count].alpha[1] << "," << vector_events[count].alpha[2] << "," <<
+					        setprecision(6) << vector_events[count].a_axis[0] << "," << vector_events[count].b_axis[0] << "," << vector_events[count].a_dist[1] << "," <<
 					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
-					        vector_events[count].tel_ra << "," << vector_events[count].tel_dec << "," << vector_events[count].source_ra << "," <<
-					        vector_events[count].source_dec << "," << vector_events[count].source_x << "," << vector_events[count].source_y << "," <<
+					        setprecision(2) << vector_events[count].tel_ra << "," << vector_events[count].tel_dec << "," << vector_events[count].source_ra << "," <<
+					        vector_events[count].source_dec << "," << setprecision(2) << vector_events[count].source_x << "," << vector_events[count].source_y << "," <<
 					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << "," << vector_events[count].edge << endl;
 				}
 //por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], source_x, source_y, source_ra, source_dec, tracking, good
