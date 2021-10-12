@@ -280,9 +280,9 @@ void get_hillas(){
 	a_dist[0] = (Yc[0])/(Xc[0]);
 	b_dist[0] = 0;
 	a_dist[1] = (Yc[0]-source_y)/(Xc[0]-source_x);
-	b_dist[1] = source_y - a_dist[0]*source_x;
+	b_dist[1] = source_y - a_dist[1]*source_x;
 	a_dist[2] = (Yc[0]+source_y)/(Xc[0]+source_x);
-	b_dist[2] = -source_y + a_dist[0]*source_x;
+	b_dist[2] = -source_y + a_dist[2]*source_x;
 }
 
 private:
