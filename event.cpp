@@ -32,6 +32,8 @@ double star_x;
 double star_y;
 int tracking;
 int good;
+double weather;
+double alpha_c;
 double delta;
 int id;
 void set_event(int por, int event_number, double tim, unsigned int nst, vector<vector<double> > pixel_parameter){
@@ -49,19 +51,23 @@ void set_event(int por, int event_number, double tim, unsigned int nst, vector<v
 	number_of_pixels = pixel_amp.size();
 }
 
-void get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
+int get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 	double ccd_unix_time;
 	delta = inf;
-	id = -1;
+	delta1 = inf;
 	for (int i = ccd_id; i < ccd_data[0].size(); i++) {
-		if(abs(unix_time - ccd_data[0][i]) < delta) {
-			delta = abs(unix_time - ccd_data[0][i]);
-			id = i;
+		delta1 = abs(unix_time - ccd_data[0][i]);
+		//cout << delta << "\t" << delta1 << endl;
+		//cout << i << endl;
+		if(delta < delta1){
+		    id = i-1;
+		    break;
 		}
-		if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
-			break;
-		}
+		delta = delta1;
 	}
+		//if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
+		//	break;
+		//}
 	ccd_unix_time = ccd_data[0][id];
 	error_deg = ccd_data[1][id];
 	tel_ra =    ccd_data[2][id];
@@ -78,7 +84,11 @@ void get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 	star_y =    ccd_data[13][id];
 	tracking =  ccd_data[14][id];
 	good =      ccd_data[15][id];
+	weather =   ccd_data[16][id];
+	alpha_c =   ccd_data[17][id];
+	return id;
 }
+
 int star;
 void star_correction(double b[64][23], int kkk[6][64][23], int pos[6][64][23]){
 	star = 0;
@@ -145,6 +155,16 @@ void to_deg(){
 	miss[0] =  0.1206*miss[0];
 	miss[1] =  0.1206*miss[1];
 	miss[2] =  0.1206*miss[2];
+	source_x = 0.1206*source_x;
+	source_y = 0.1206*source_y;
+	star_x = 0.1206*star_x;
+	star_y = 0.1206*star_y;
+	b_axis[0] = 0.1206*b_axis[0];
+	b_axis[1] = 0.1206*b_axis[1];
+	b_axis[2] = 0.1206*b_axis[2];
+	b_dist[0] = 0.1206*b_dist[0];
+	b_dist[1] = 0.1206*b_dist[1];
+	b_dist[2] = 0.1206*b_dist[2];
 };
 
 void set_cr(double countrate){

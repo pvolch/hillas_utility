@@ -4,7 +4,7 @@
 
 
 double write_cr_file(vector <Events> &vector_event){
-	int step = 1; //sec
+	int step = 30; //sec
 	int number_events;
 	double min_time = vector_event.front().unix_time;
 	double max_time = vector_event.back().unix_time;
@@ -16,7 +16,9 @@ double write_cr_file(vector <Events> &vector_event){
 		int id = 0;
 		for(int e_time = 0; e_time < vector_event.size(); e_time++) {
 			if(vector_event[e_time].unix_time >= i_grid && vector_event[e_time].unix_time < i_grid+step) {
+			    if (vector_event[e_time].size > 100){
 				number_events++;
+			    }
 				vector_events.push_back(e_time);
 			}
 			if(vector_event[e_time].unix_time >= i_grid+step) {
@@ -25,6 +27,7 @@ double write_cr_file(vector <Events> &vector_event){
 			}
 		}
 		for(int e_time = 0; e_time < vector_events.size(); e_time++) {
+			//cout << number_events << "\t" << step << "\t" << (double)number_events/step << endl;
 			vector_event[vector_events[e_time]].set_cr((double)number_events/step);
 			//cout << vector_event[vector_events[e_time]].number << "\t" << vector_events[e_time] << "\t" << vector_event[vector_events[e_time]].cr_sec << endl;
 
