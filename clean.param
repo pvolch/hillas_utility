@@ -1,8 +1,0 @@
-cleaning: 14 7
-iacts: 1 2 3 4
-input_file: taiga591
-folder: ./data/zen_0-30/
-gamma: 0
-add_to_out_name: 14_7
-edge: 1 # 0 - without edges, 1 for any edges
-size: 0
