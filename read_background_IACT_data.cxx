@@ -19,15 +19,14 @@
 using namespace std;
 char fou[90], month_year[70], fou_hillas[90],folder_outs[50];
 string line, folder;
-	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
+int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][23],pos[6][64][23], Nsos_array[64][23], cluster[23], nn, anti_f[23], jj, jjj,j, x, gg;
 int co, number_of_pixels;
-double pedp,sigp,b[64][25],bmp[64][25],ped[64][25],sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
-string str,srr[25], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
-double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25], tim_start = 0, tim_end = 0, event_delay;
+double pedp,sigp,b[64][23],bmp[64][23],ped[64][23],sig[64][23], e[23][64], sens[23][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
+string str,srr[23], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
+double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][23], y_pos[64][23], tim_start = 0, tim_end = 0, event_delay;
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
 int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1;
 char press;
-bool clean_only;
 
 double time_start_end(string run_date, string path){
 	int x, *date;
@@ -116,9 +115,6 @@ int main(int argc, char **argv)
 	for(int i = 0; i < 28; i++) {
 		ist3 >> exclud_clust[i] >> exclud_numb[i];
 	}
-	getline(pParam, line);
-	istringstream ist70(line);
-	ist70 >> datt >> clean_only;
 	getline(pParam, line);
 	istringstream ist7(line);
 	ist7 >> data_path;
@@ -327,7 +323,7 @@ int main(int argc, char **argv)
 			cout << i << "\t" << vector_wobble[i] << endl;
 		}
 		////////////////////////////////////////////////////////////////////////
-		vector<vector<double> > vector_ccd = read_ccd(vector_wobble, tim_start, tim_end, clean_only);
+		vector<vector<double> > vector_ccd = read_ccd(vector_wobble, tim_start, tim_end);
 		int ccd_id = 0;
 		cout << "\t\tnumber of written ccd rows: " << vector_ccd[0].size() << endl;
 		////////////////////////////////////////////////////////////////////////
@@ -341,7 +337,7 @@ int main(int argc, char **argv)
 			DataFileOuts.open(FileListOuts[i].c_str());
 			if (DataFileOuts.is_open())
 			{
-				for(int coun = 0; coun < 25; coun++) {
+				for(int coun = 0; coun < 23; coun++) {
 					for(int count = 0; count < 64; count++) {
 						ped[count][coun]=0;
 						sig[count][coun]=0;
@@ -382,10 +378,10 @@ int main(int argc, char **argv)
 							//cout << ff << "\t" << ch << "\t" << ped[ch][ff] << "\t" << sig[ch][ff] << endl;
 						}
 						DataFilePeds.close();
-						/*if(i == 0) {
+						if(i == 0) {
 							cout << "Check all parameters and press any key to continue" << endl;
 							cin >> press;
-						}*/
+						}
 						while (!DataFileOuts.eof())
 						{
 							int *date;
@@ -398,7 +394,7 @@ int main(int argc, char **argv)
 								istringstream iss(str);
 								iss >> n;
 								//cout << n << endl;
-								for (int count = 0; count < 25; count++)
+								for (int count = 0; count < 23; count++)
 								{
 									cluster[count]=0;
 									for (int coun = 0; coun < 64; coun++)
@@ -472,10 +468,6 @@ int main(int argc, char **argv)
 										   "\t" << setw(3) << left << bmp[ii+6][f] << "\t" << setw(3) << left << ped[ii+6][f] <<
 										   "\t" << setw(3) << left << bmp[ii+7][f] << "\t" << setw(3) << left << ped[ii+7][f] << endl;*/
 									}
-									for( int ii=0; ii < 64; ii++)
-									{
-										bmp[ii][24] = 0;
-									}
 									for(int ij = 0; ij < 64; ij = ij + 2) {
 										if(e[f][ij] > 0 || sens[f][ij] > 0) {
 											if((bmp[ij][f]) >= 3000) {
@@ -495,7 +487,7 @@ int main(int argc, char **argv)
 										//sig[ij+1][f] = sig[ij+1][f]/(e[f][ij+1]*sens[f][ij+1]);
 									}
 								}
-								for(f = 1; f <= 25; f++)
+								for(f = 1; f <= 22; f++)
 								{
 									jj = 0;
 									jjj = 0;
@@ -512,14 +504,14 @@ int main(int argc, char **argv)
 									if( jj > 0) {
 										for (int sc = 0; sc < 64; sc = sc + 2)
 										{
-											if(bmp[sc][f]>edge1*sig[sc][f])
+											if(bmp[sc][f]<edge1*sig[sc][f])
 											{
-												if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge2*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
-												   (bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge2*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
-												   (bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge2*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
-												   (bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge2*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
-												   (bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge2*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
-												   (bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge2*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
+												if((bmp[pos[0][sc][f]][kkk[0][sc][f]]<edge2*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]!=0) ||
+												   (bmp[pos[1][sc][f]][kkk[1][sc][f]]<edge2*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]!=0) ||
+												   (bmp[pos[2][sc][f]][kkk[2][sc][f]]<edge2*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]!=0) ||
+												   (bmp[pos[3][sc][f]][kkk[3][sc][f]]<edge2*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]!=0) ||
+												   (bmp[pos[4][sc][f]][kkk[4][sc][f]]<edge2*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]!=0) ||
+												   (bmp[pos[5][sc][f]][kkk[5][sc][f]]<edge2*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]!=0))
 												{
 													//  cout << "11111" << "\t" << i << "\t" << f << endl;
 													// cout << bmp[i][f] << endl;
@@ -530,14 +522,14 @@ int main(int argc, char **argv)
 													bmp[sc+1][f] = 0;
 												}
 											}
-											else if(bmp[sc][f]>edge2*sig[sc][f])
+											else if(bmp[sc][f]<edge2*sig[sc][f])
 											{
-												if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge1*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
-												   (bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge1*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
-												   (bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge1*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
-												   (bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge1*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
-												   (bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge1*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
-												   (bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge1*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
+												if((bmp[pos[0][sc][f]][kkk[0][sc][f]]<edge1*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]!=0) ||
+												   (bmp[pos[1][sc][f]][kkk[1][sc][f]]<edge1*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]!=0) ||
+												   (bmp[pos[2][sc][f]][kkk[2][sc][f]]<edge1*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]!=0) ||
+												   (bmp[pos[3][sc][f]][kkk[3][sc][f]]<edge1*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]!=0) ||
+												   (bmp[pos[4][sc][f]][kkk[4][sc][f]]<edge1*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]!=0) ||
+												   (bmp[pos[5][sc][f]][kkk[5][sc][f]]<edge1*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]!=0))
 												{
 													// cout << "22222" << "\t" << i << "\t" << f << endl;
 													//cout << bmp[i][f] << endl;
@@ -567,7 +559,7 @@ int main(int argc, char **argv)
 								//cout << "ok" << endl;
 								Events event;
 								vector<vector<double> > vector_pixel( 5, vector<double> (0));
-								for (int count = 0; count < 25; count++)
+								for (int count = 0; count < 23; count++)
 								{
 									for (int coun = 0; coun < 64; coun+=2)
 									{
@@ -591,7 +583,7 @@ int main(int argc, char **argv)
 										event.get_hillas();
 										event.to_deg();
 										event.get_edge(Nsos_array);
-										//cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << " " << event.edge << endl;
+										cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << " " << event.edge << endl;
 										fout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
 										vector_events.push_back(event);
 									}
@@ -627,7 +619,7 @@ int main(int argc, char **argv)
 					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
 					        setprecision(2) << vector_events[count].tel_ra << "," << vector_events[count].tel_dec << "," << vector_events[count].source_ra << "," <<
 					        vector_events[count].source_dec << "," << setprecision(2) << vector_events[count].source_x << "," << vector_events[count].source_y << "," <<
-					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << "," << vector_events[count].edge << "," << 
+					        vector_events[count].tracking << "," << vector_events[count].good << "," << vector_events[count].star << "," << vector_events[count].edge << "," <<
 					        vector_events[count].weather << "," << vector_events[count].alpha_c << endl;
 				}
 //por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], source_x, source_y, source_ra, source_dec, tracking, good

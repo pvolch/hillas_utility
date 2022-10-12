@@ -59,15 +59,15 @@ int get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 		delta1 = abs(unix_time - ccd_data[0][i]);
 		//cout << delta << "\t" << delta1 << endl;
 		//cout << i << endl;
-		if(delta < delta1) {
-			id = i-1;
-			break;
+		if(delta < delta1){
+		    id = i-1;
+		    break;
 		}
 		delta = delta1;
 	}
-	//if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
-	//	break;
-	//}
+		//if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
+		//	break;
+		//}
 	ccd_unix_time = ccd_data[0][id];
 	error_deg = ccd_data[1][id];
 	tel_ra =    ccd_data[2][id];
