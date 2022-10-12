@@ -37,7 +37,7 @@ vector <string> wobble(string param_wobble_path, double time_start, double time_
 				if(wobble_path.size() == 0) {
 					cout << "wobble.cpp: ccd data folder is empty" << endl;
 					exit(0);
-		 		}
+				}
 				break;
 			}
 			wobble_path.push_back(path);
@@ -66,7 +66,7 @@ vector <string> wobble(string param_wobble_path, double time_start, double time_
 				t_end = i;
 				//cout << t_end << endl;
 			}
-			if(abs(time_start - wobble_time[i]) < 12*60*60){
+			if(abs(time_start - wobble_time[i]) < 12*60*60) {
 				vector_path.push_back(wobble_path[i]);
 			}
 		}
@@ -89,10 +89,10 @@ vector <string> wobble(string param_wobble_path, double time_start, double time_
    vector <double> vector_tracking;
    vector <double> vector_zenit;
    vector <double> vector_good;*/
-vector<vector<double> > read_ccd(vector <string> vector_path, double tim_start, double tim_end){ //читаемые из data_ccd столбцы //unix_time, error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az, source_el, source_x, source_y, star_x, star_y, tracking, good, weather, alpha_c
+vector<vector<double> > read_ccd(vector <string> vector_path, double tim_start, double tim_end, bool clean_only){ //читаемые из data_ccd столбцы //unix_time, error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az, source_el, source_x, source_y, star_x, star_y, tracking, good, weather, alpha_c
 	vector<vector<double> > vector_ccd( 18, vector<double> (0));
-	int column[18] = {0,4,5,6,7,8,13,14,15,16,17,18,23,24,25,26,27,28}; //читаемые из data_ccd столбцы //unix_time error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az, 
-										//source_el, source_x, source_y, star_x, star_y, tracking, good, weather, alpha_c
+	int column[18] = {0,4,5,6,7,8,13,14,15,16,17,18,23,24,25,26,27,28}; //читаемые из data_ccd столбцы //unix_time error_deg, tel_ra, tel_dec, tel_az, tel_el, source_ra, source_dec, source_az,
+	//source_el, source_x, source_y, star_x, star_y, tracking, good, weather, alpha_c
 	double x;
 	string source, line;
 	for(int jj = 0; jj < vector_path.size(); jj++) {
@@ -114,13 +114,13 @@ vector<vector<double> > read_ccd(vector <string> vector_path, double tim_start, 
 				double u_time = 0;
 				for(int i = 0; i < 29; i++) {
 					getline(ist, source, ',');
-					if (i == 0){
-					u_time = atof(source.c_str());
+					if (i == 0) {
+						u_time = atof(source.c_str());
 					}
-					if (u_time >= tim_start && u_time <= tim_end){
+					if (u_time >= tim_start && u_time <= tim_end) {
 						//cout << source << endl;
 						for(int j = 0; j < 18; j++) {
-						//cout << i << "\t" << column[j] << endl;
+							//cout << i << "\t" << column[j] << endl;
 							if(i == column[j]) {
 								//cout << atof(source.c_str()) << endl;
 								vector_ccd[j].push_back(atof(source.c_str()));
@@ -133,6 +133,11 @@ vector<vector<double> > read_ccd(vector <string> vector_path, double tim_start, 
 		}
 		//cout << "size: " << vector_ccd[0].size() << endl;
 		file_ccd.close();
+	}
+	if (clean_only == 1) {
+		for(int j = 0; j < 18; j++) {
+			vector_ccd[j].push_back(0);
+		}
 	}
 	return vector_ccd;
 }

@@ -1,12 +1,13 @@
 IACT number 1 (0 - IACT01, 1 - IACT02...)
-factors_iact2_gain128.txt (factors file name) factors_iact2_gain128.txt factors_051019.07.txt factors_iact2_310120.led.txt
-neighbour_clean_experiment_iact2 (neighbors and XY coordinate file)
+fake_coeffs_IACT02.txt (factors file name) factors_iact2_gain128.txt factors_051019.07.txt factors_iact2_310120.led.txt
+neighbour_clean_experiment_iact3 (neighbors and XY coordinate file)
 peds				2			(0 - peds, 1 - peds.m3s, 2 - peds.mediana)
 cleaning			0			(0 - fix, 1 - sigma)
 cleaning thresholds	14	7		(for sigma usually 6	3, for fix usually 14	7)
 excluded pixels
-/hdd/IACTs/Server/v6.1/ #path to data folder (that contain DDMMYY.RR folders)
-/hdd/IACTs/Server/v6.1/ #out path (here folder DDMMYY.RR with out files will be created)
-/hdd/IACTs/Server/v6.1/211020.02/ #path to wobble folder (name of appropriate wobble file should be of the form: pointing_data_YYYY-MM-DD_hh:mm:ss.csv)
+clean_only 1 || 1 - process data ignoring wrong pointing, 0 - pointing file must correspond to run
+/hdd/IACTs/binary_data/IACT_data-fast.prog/OUTs/IACT03/ #path to data folder (that contain DDMMYY.RR folders)
+/hdd/IACTs/binary_data/IACT_data-fast.prog/OUTs/IACT03/ #out path (here folder DDMMYY.RR with out files will be created)
+/hdd/IACTs/Mkn421/2019-20/IACT01/pointing/ #path to wobble folder (name of appropriate wobble file should be of the form: pointing_data_YYYY-MM-DD_hh:mm:ss.csv)
 date	run
-211020	02
+220922  00

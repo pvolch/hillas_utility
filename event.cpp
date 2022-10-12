@@ -59,15 +59,15 @@ int get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 		delta1 = abs(unix_time - ccd_data[0][i]);
 		//cout << delta << "\t" << delta1 << endl;
 		//cout << i << endl;
-		if(delta < delta1){
-		    id = i-1;
-		    break;
+		if(delta < delta1) {
+			id = i-1;
+			break;
 		}
 		delta = delta1;
 	}
-		//if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
-		//	break;
-		//}
+	//if(ccd_data[0][i] > unix_time && abs(unix_time - ccd_data[0][i]) > delta) {
+	//	break;
+	//}
 	ccd_unix_time = ccd_data[0][id];
 	error_deg = ccd_data[1][id];
 	tel_ra =    ccd_data[2][id];
@@ -90,7 +90,7 @@ int get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 }
 
 int star;
-void star_correction(double b[64][23], int kkk[6][64][23], int pos[6][64][23]){
+void star_correction(double b[64][25], int kkk[6][64][25], int pos[6][64][25]){
 	star = 0;
 	for (int k = 0; k < pixel_amp.size(); k++) {
 		if(sqrt(pow(pixel_x[k] - star_x,2)+pow(pixel_y[k] - star_y,2)) <= 1.5) {
@@ -115,7 +115,7 @@ void star_correction(double b[64][23], int kkk[6][64][23], int pos[6][64][23]){
 	}
 }
 bool edge = 0;
-void get_edge(int Ns[64][23]){
+void get_edge(int Ns[64][25]){
 	for (int i = 0; i < pixel_number.size(); i++) {
 		if(Ns[pixel_number[i]][pixel_cluster[i]] != 6) {
 			edge = 1;
