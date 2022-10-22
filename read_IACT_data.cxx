@@ -165,10 +165,14 @@ int main(int argc, char **argv)
 				istringstream ist(line);
 				ist >> bsm >> cch >> gain >> gain >> ecode >> rel_sens;
 				//cout << "\t" << bsm << "\t" << cch << "\t" << ecode << "\t" << rel_sens << endl;
-				e[bsm][cch] = ecode;
-				sens[bsm][cch] = rel_sens;
 				if(ecode > 0) {
+					e[bsm][cch] = ecode;
+					sens[bsm][cch] = rel_sens;
 					q++;
+				}
+				else{
+					e[bsm][cch] = 1e9;
+					sens[bsm][cch] = -1e9;
 				}
 			}
 		}
@@ -184,7 +188,13 @@ int main(int argc, char **argv)
 				e[bsm][cch] = ecode;
 				sens[bsm][cch] = rel_sens;
 				if(ecode > 0) {
+					e[bsm][cch] = ecode;
+					sens[bsm][cch] = rel_sens;
 					q++;
+				}
+				else{
+					e[bsm][cch] = 1e9;
+					sens[bsm][cch] = -1e9;
 				}
 			}
 		}
