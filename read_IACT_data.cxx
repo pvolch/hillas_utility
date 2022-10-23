@@ -341,7 +341,7 @@ int main(int argc, char **argv)
 		int ccd_id = 0;
 		cout << "\t\tnumber of written ccd rows: " << vector_ccd[0].size() << endl;
 		////////////////////////////////////////////////////////////////////////
-		sprintf(fou_hillas, "%s%s%s%s%s%s%s%s%s%02.0f%s%02.0f%s%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(),"/", FolderList[jl].c_str(),".", RunNumbList[jl].c_str(), "_out_hillas_", edge1, "_", edge2, cleaning_type.c_str(), ".csv");
+		sprintf(fou_hillas, "%s%s%s%s%s%s%s%s%s%02.0f%s%02.1f%s%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(),"/", FolderList[jl].c_str(),".", RunNumbList[jl].c_str(), "_out_hillas_", edge1, "_", edge2, cleaning_type.c_str(), ".csv");
 		//cout << fou_hillas << endl;
 		ofstream fout_hillas(fou_hillas);
 		fout_hillas << "por,event_numb,unix_time,unix_time_after_dot(ns),delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],azwidth[1],azwidth[2],miss[1],miss[2],alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
