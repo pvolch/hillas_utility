@@ -360,7 +360,7 @@ int main(int argc, char **argv)
 				int qqq = 0;
 				vector <Events> vector_events;
 				cout << i << "\t" << FileListPeds[i] << endl;
-				sprintf(fou, "%s%s%s%s%s%s%s%02.0f%s%02.0f%s%s%03d%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(), "/", FolderList[jl].c_str(), ".cleanout_", edge1, "_", edge2, cleaning_type.c_str(), "_", i+1, ".txt");
+				sprintf(fou, "%s%s%s%s%s%s%s%02.0f%s%02.1f%s%s%03d%s", out_data_path.c_str(), FolderList[jl].c_str(), ".", RunNumbList[jl].c_str(), "/", FolderList[jl].c_str(), ".cleanout_", edge1, "_", edge2, cleaning_type.c_str(), "_", i+1, ".txt");
 				ofstream fout(fou);
 				cout << "output: created files:" << endl << "\t" << fou_hillas << endl << i << "\t" << fou << endl;
 				if(FileListOuts[i].compare(FileListOuts[i].size()-3, 3, FileListPeds[i], FileListPeds[i].size()-3, 3)==0) {
