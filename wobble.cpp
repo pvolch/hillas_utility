@@ -138,8 +138,8 @@ vector<vector<double> > read_ccd(vector <string> vector_path, double tim_start, 
 		for(int j = 0; j < 18; j++) {	
 			vector_ccd[j].push_back(0);	
 		}
-		vector_ccd[12] = 1000;	
-		vector_ccd[13] = 1000;	
+		vector_ccd[12][0] = 1000;	
+		vector_ccd[13][0] = 1000;	
 	}
 	return vector_ccd;
 }
