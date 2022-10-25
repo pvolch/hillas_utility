@@ -55,6 +55,7 @@ int get_ccd_parameters(int ccd_id, vector<vector<double> > ccd_data){
 	double ccd_unix_time;
 	delta = inf;
 	delta1 = inf;
+	id = 0;
 	for (int i = ccd_id; i < ccd_data[0].size(); i++) {
 		delta1 = abs(unix_time - ccd_data[0][i]);
 		//cout << delta << "\t" << delta1 << endl;

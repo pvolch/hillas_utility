@@ -444,7 +444,7 @@ int main(int argc, char **argv)
 										istringstream ist(str);
 										ist >>  bmp[ii][f] >> x >> bmp[ii+1][f] >> x >> bmp[ii+2][f] >> x >> bmp[ii+3][f] >> x >>
 										bmp[ii+4][f] >> x >> bmp[ii+5][f] >> x >> bmp[ii+6][f] >> x >> bmp[ii+7][f] >> x;
-										if(IACT_numb == 0 && f == 17) {
+										if(IACT_numb == 100 && f == 17) {
 											bmp[58][17] = bmp[24][17];
 											bmp[59][17] = bmp[25][17];
 
