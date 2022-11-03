@@ -137,10 +137,13 @@ double con2;
 double con1;
 double amp_max;
 double size;
+double skewness;
+double kurtosis;
 double a_axis[3];
 double b_axis[3];
 double a_dist[3];
 double b_dist[3];
+
 
 void to_deg(){
 	Xc[0] = 0.1206*Xc[0];
@@ -166,6 +169,8 @@ void to_deg(){
 	b_dist[0] = 0.1206*b_dist[0];
 	b_dist[1] = 0.1206*b_dist[1];
 	b_dist[2] = 0.1206*b_dist[2];
+	skewness = 0.1206*skewness;
+	kurtosis = 0.1206*kurtosis;
 };
 
 void set_cr(double countrate){
@@ -183,7 +188,12 @@ void get_hillas(){
 	double U[3];
 	double V[3];
 	double bm[3];
-	double amp2;
+	double amp2 = 0;
+	double longitudinal1 = 0;
+	double longitudinal2 = 0;
+	double longitudinal3 = 0;
+	double longitudinal4 = 0;
+	double length_sig = 0;
 	//static double hillas[18]; //size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[0],
 	//azwidth[1], azwidth[2], miss[0], miss[1], miss[2], alpha[0], alpha[1], alpha[2]
 	size = 0;
@@ -298,6 +308,33 @@ void get_hillas(){
 			alpha[i]=asin(miss[i]/dist[i])*(180./Pi);
 		}
 	}
+
+	if(length[0] != 0){
+		for(int k = 0; k < pixel_amp.size(); k++) {
+				longitudinal1 += pixel_amp[k]*pow((pixel_x[k] - Xc[0]) * cos(atan(a_axis[0])) + (pixel_y[k] - Yc[0]) * sin(atan(a_axis[0])),1);
+				longitudinal2 += pixel_amp[k]*pow((pixel_x[k] - Xc[0]) * cos(atan(a_axis[0])) + (pixel_y[k] - Yc[0]) * sin(atan(a_axis[0])),2);
+				longitudinal3 += pixel_amp[k]*pow((pixel_x[k] - Xc[0]) * cos(atan(a_axis[0])) + (pixel_y[k] - Yc[0]) * sin(atan(a_axis[0])),3);
+				longitudinal4 += pixel_amp[k]*pow((pixel_x[k] - Xc[0]) * cos(atan(a_axis[0])) + (pixel_y[k] - Yc[0]) * sin(atan(a_axis[0])),4);
+			}
+			longitudinal1 = longitudinal1/size;
+			longitudinal2 = longitudinal2/size;
+			longitudinal3 = longitudinal3/size;
+			longitudinal4 = longitudinal4/size;
+			length_sig = pow(longitudinal2 - pow(longitudinal1, 2), 0.5);
+			skewness = (longitudinal3 - 3*longitudinal2*longitudinal1 + 2*pow(longitudinal1, 2))/pow(length_sig,3);
+			kurtosis = (longitudinal4 - 4*longitudinal3*longitudinal1 + 6*longitudinal2*pow(longitudinal1, 2) - 3*pow(longitudinal1, 4)/pow(length_sig,4));
+			if(((source_x - Xc[0] < 0 && skewness > 0) || (source_x - Xc[0] > 0 && skewness < 0)) || ((source_x > 0 && skewness < 0) || (source_x < 0 && skewness > 0))){
+				skewness = abs(skewness);
+			}
+			else{
+				skewness = -abs(skewness);
+			}
+	}
+	else{
+		skewness = NAN;
+		kurtosis = NAN;
+	}
+
 	a_dist[0] = (Yc[0])/(Xc[0]);
 	b_dist[0] = 0;
 	a_dist[1] = (Yc[0]-source_y)/(Xc[0]-source_x);

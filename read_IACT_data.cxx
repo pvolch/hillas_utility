@@ -373,7 +373,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,unix_time,unix_time_after_dot(ns),delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],azwidth[1],azwidth[2],miss[1],miss[2],alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,unix_time,unix_time_after_dot(ns),delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],azwidth[1],azwidth[2],skewness,kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			ifstream DataFileOuts;
@@ -647,7 +647,7 @@ int main(int argc, char **argv)
 					        setprecision(2) << vector_events[count].con2 << "," << setprecision(6) << vector_events[count].length[0] << "," <<
 					        vector_events[count].width[0] << "," << vector_events[count].dist[0] << "," << vector_events[count].dist[1] << "," <<
 					        vector_events[count].dist[2] << "," << setprecision(3) << vector_events[count].azwidth[1] << "," <<
-					        vector_events[count].azwidth[2] << "," << vector_events[count].miss[1] << "," << vector_events[count].miss[2] << "," <<
+					        vector_events[count].azwidth[2] << "," << vector_events[count].skewness << "," << vector_events[count].kurtosis << "," <<
 					        setprecision(1) << vector_events[count].alpha[0] << "," << vector_events[count].alpha[1] << "," << vector_events[count].alpha[2] << "," <<
 					        setprecision(6) << vector_events[count].a_axis[0] << "," << vector_events[count].b_axis[0] << "," << vector_events[count].a_dist[1] << "," <<
 					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
