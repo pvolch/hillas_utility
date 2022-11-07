@@ -14,11 +14,12 @@
 #include "wobble.cpp"
 #include "event.cpp"
 #include "CR.cpp"
+#include "make_neigbors.cpp"
 #include <sys/stat.h>
 
 using namespace std;
 char fou[190],save_background_str[190], month_year[70], fou_hillas[190],folder_outs[150], background_folder[190], clean_folder[190], param_path_str[150];
-string line, folder;
+string folder;
 	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
 int co, number_of_pixels_cam, pix_number[64][25];
 double pedp, sigp, b[64][25],bmp[64][25],ped[64][25],sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
@@ -84,7 +85,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	int IACT_numb;
-	string datt, factor_file, neighbour_file;
+	string datt, factor_file, coord_file;
 	double edge1, edge2;
 	getline(pParam, line);
 	istringstream ist4(line);
@@ -94,7 +95,7 @@ int main(int argc, char **argv)
 	ist6 >> factor_file;
 	getline(pParam, line);
 	istringstream ist5(line);
-	ist5 >> neighbour_file;
+	ist5 >> coord_file;
 	getline(pParam, line);
 	istringstream ist2(line);
 	ist2 >> datt >> ped_param;
@@ -207,8 +208,8 @@ int main(int argc, char **argv)
 	cout << "file calibration size (28*2*22): " << q << endl;
 	file0.close();
 
-	////////////////////////////////// read sostable
-	ifstream file1(neighbour_file);
+	////////////////////////////////// read neighbours table
+	ifstream file1(make_neighbours(IACT_numb, coord_file, exclud_clust, exclud_numb));
 	if (!file1.is_open()) {
 		cout << "file neighbours is not found" << endl;
 		return 0;
@@ -225,11 +226,6 @@ int main(int argc, char **argv)
 		getline(file1, line);
 		if(file1.eof())
 		{
-			cout << "file neighbours size: " << q << endl;
-			if(q == 595 && IACT_numb == 0) {
-				cout << "ERROR: using incompatible neighbors file" << endl;
-				exit(0);
-			}
 			break;
 		}
 		istringstream ist(line);
@@ -237,44 +233,13 @@ int main(int argc, char **argv)
 		pix_number[ii][kk] = q;
 		q++;
 		ist >> x_pos[ii][kk] >> y_pos[ii][kk] >> Nsos;
-		//cout << kk << "\t" << ii << "\t" << Nsos <<"\t\t";
 		Nsos_array[ii][kk] = Nsos;
-		int zi = 0;
-		for(int i = 0; i < 28; i++) {
-			//cout << kk <<" " << exclud_clust[i] <<"\t" << ii << " " << exclud_numb[i] << endl;
-			if((kk == exclud_clust[i] && ii == exclud_numb[i])) {
-				for(int j = 0; j < 6; j++) {
-					kx = 0;
-					ix = 0;
-					ist >> kx >> ix;
-					kkk[j][ii][kk] = -1;
-					pos[j][ii][kk] = -1;
-				}
-				zi = 1;
-				break;
-			}
-		}
-		//if((kk == exclud_clust[0] && ii == exclud_numb[0]) || (kk == exclud_clust[1] && ii == exclud_numb[1]) || (kk == exclud_clust[2] && ii == exclud_numb[2])){
-		if(zi == 0) {
-			for(int j = 0; j < 6; j++) {
-				kx = 0;
-				ix = 0;
-				ist >> kx >> ix;
-				//if((kx == exclud_clust[0] &&  ix == exclud_numb[0]) || (kx == exclud_clust[1] &&  ix == exclud_numb[1]) || (kx == exclud_clust[2] &&  ix == exclud_numb[2])){
-				for(int i = 0; i < 28; i++) {
-					if((kk == exclud_clust[i] && ii == exclud_numb[i])) {
-						kkk[j][ii][kk] = -1;
-						pos[j][ii][kk] = -1;
-						zi = 0;
-						break;
-					}
-				}
-				if(zi == 0) {
-					kkk[j][ii][kk] = kx;
-					pos[j][ii][kk] = ix;
-				}
-				//cout << kkk[j][ii][kk] << " " << pos[j][ii][kk] << " ";
-			}
+		for(int j = 0; j < 6; j++) {
+			kx = 0;
+			ix = 0;
+			ist >> kx >> ix;
+			kkk[j][ii][kk] = kx;
+			pos[j][ii][kk] = ix;
 		}
 		number_of_pixels_cam = q;
 	}
@@ -338,11 +303,8 @@ int main(int argc, char **argv)
 		}
 		cout << "out directory " << folder_outs << " is created" << endl;
 		////////////////////////copy file param to directiry:
-		//sprintf(param_path_str, "%s%s",  data_path.c_str(), argv[1]);
-		//cout << param_path_str << endl;
 		ifstream  src(argv[1], ios::binary);
 		sprintf(param_path_str, "%s/%s",  folder_outs, argv[1]);
-    	//cout << param_path_str << endl;
 		ofstream  dst(param_path_str,   ios::binary);
 		dst << src.rdbuf();
 
@@ -576,9 +538,9 @@ int main(int argc, char **argv)
 									
 									for (int sc = 0; sc < 64; sc = sc + 2)
 									{
-										if(background_marker[sc][f] == 0 && pix_number[sc][f]>=0 && bmp[sc][f] != 0)
+										if(background_marker[sc][f] == 0 && bmp[sc][f] != 0)
 										{
-											if(vector_background[pix_number[sc][f]].size() < 10000)
+											if(vector_background[pix_number[sc][f]].size() < 10000 && pix_number[sc][f]>=0)
 											{
 												vector_background[pix_number[sc][f]].push_back(bmp[sc][f]);
 											}
