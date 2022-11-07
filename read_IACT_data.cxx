@@ -204,7 +204,6 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-
 	cout << "file calibration size (28*2*22): " << q << endl;
 	file0.close();
 
@@ -443,34 +442,6 @@ int main(int argc, char **argv)
 										istringstream ist(str);
 										ist >>  bmp[ii][f] >> x >> bmp[ii+1][f] >> x >> bmp[ii+2][f] >> x >> bmp[ii+3][f] >> x >>
 										bmp[ii+4][f] >> x >> bmp[ii+5][f] >> x >> bmp[ii+6][f] >> x >> bmp[ii+7][f] >> x;
-										if(IACT_numb == 100 && f == 17) {
-											bmp[58][17] = bmp[24][17];
-											bmp[59][17] = bmp[25][17];
-
-											bmp[50][17] = bmp[28][17];
-											bmp[51][17] = bmp[29][17];
-
-											bmp[56][17] = bmp[20][17];
-											bmp[57][17] = bmp[21][17];
-
-											ped[58][17] = ped[24][17];
-											ped[59][17] = ped[25][17];
-
-											ped[50][17] = ped[28][17];
-											ped[51][17] = ped[29][17];
-
-											ped[56][17] = ped[20][17];
-											ped[57][17] = ped[21][17];
-
-											sig[58][17] = sig[24][17];
-											sig[59][17] = sig[25][17];
-
-											sig[50][17] = sig[28][17];
-											sig[51][17] = sig[29][17];
-
-											sig[56][17] = sig[20][17];
-											sig[57][17] = sig[21][17];
-										}
 										//cout << bmp[6][6] << endl;
 										/*cout << setw(3) << left << bmp[ii][f] << "\t" << setw(3) << left << ped[ii][f] <<
 										   "\t" << setw(3) << left << bmp[ii+1][f] << "\t" << setw(3) << left << ped[ii+1][f] <<
@@ -480,10 +451,6 @@ int main(int argc, char **argv)
 										   "\t" << setw(3) << left << bmp[ii+5][f] << "\t" << setw(3) << left << ped[ii+5][f] <<
 										   "\t" << setw(3) << left << bmp[ii+6][f] << "\t" << setw(3) << left << ped[ii+6][f] <<
 										   "\t" << setw(3) << left << bmp[ii+7][f] << "\t" << setw(3) << left << ped[ii+7][f] << endl;*/
-									}
-									for( int ii=0; ii < 64; ii++)
-									{
-										bmp[ii][24] = 0;
 									}
 									for(int ij = 0; ij < 64; ij = ij + 2) {
 										if(e[f][ij] > 0 || sens[f][ij] > 0) {
