@@ -169,7 +169,6 @@ void to_deg(){
 	b_dist[0] = 0.1206*b_dist[0];
 	b_dist[1] = 0.1206*b_dist[1];
 	b_dist[2] = 0.1206*b_dist[2];
-	skewness = 0.1206*skewness;
 	kurtosis = 0.1206*kurtosis;
 };
 
@@ -323,7 +322,7 @@ void get_hillas(){
 			length_sig = pow(longitudinal2 - pow(longitudinal1, 2), 0.5);
 			skewness = (longitudinal3 - 3*longitudinal2*longitudinal1 + 2*pow(longitudinal1, 2))/pow(length_sig,3);
 			kurtosis = (longitudinal4 - 4*longitudinal3*longitudinal1 + 6*longitudinal2*pow(longitudinal1, 2) - 3*pow(longitudinal1, 4)/pow(length_sig,4));
-			if(((source_x - Xc[0] < 0 && skewness > 0) || (source_x - Xc[0] > 0 && skewness < 0)) || ((source_x > 0 && skewness < 0) || (source_x < 0 && skewness > 0))){
+			if(((source_x - Xc[0] < 0 && skewness > 0) || (source_x - Xc[0] > 0 && skewness < 0))){
 				skewness = abs(skewness);
 			}
 			else{

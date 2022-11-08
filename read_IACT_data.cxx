@@ -576,7 +576,7 @@ int main(int argc, char **argv)
 					        setprecision(2) << vector_events[count].con2 << "," << setprecision(6) << vector_events[count].length[0] << "," <<
 					        vector_events[count].width[0] << "," << vector_events[count].dist[0] << "," << vector_events[count].dist[1] << "," <<
 					        vector_events[count].dist[2] << "," << setprecision(3) << vector_events[count].azwidth[1] << "," <<
-					        vector_events[count].azwidth[2] << "," << vector_events[count].skewness << "," << vector_events[count].kurtosis << "," <<
+					        vector_events[count].azwidth[2] << "," << setprecision(6) << vector_events[count].skewness << "," << vector_events[count].kurtosis << "," <<
 					        setprecision(1) << vector_events[count].alpha[0] << "," << vector_events[count].alpha[1] << "," << vector_events[count].alpha[2] << "," <<
 					        setprecision(6) << vector_events[count].a_axis[0] << "," << vector_events[count].b_axis[0] << "," << vector_events[count].a_dist[1] << "," <<
 					        vector_events[count].b_dist[1] << "," << vector_events[count].a_dist[2] << "," << vector_events[count].b_dist[2] << "," <<
