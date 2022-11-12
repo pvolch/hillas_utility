@@ -217,6 +217,10 @@ int main(int argc, char **argv)
 	for(int coun = 0; coun < 25; coun++) {
 					for(int count = 0; count < 64; count++) {
 						pix_number[count][coun]=-1;
+						for(int j = 0; j < 6; j++) {
+						    kkk[j][count][coun] = -1;
+						    pos[j][count][coun] = -1;
+						    }
 					}
 				}
 	while(!file1.eof()) {
@@ -240,8 +244,9 @@ int main(int argc, char **argv)
 			kkk[j][ii][kk] = kx;
 			pos[j][ii][kk] = ix;
 		}
-		number_of_pixels_cam = q;
 	}
+	number_of_pixels_cam = q;
+	cout << "number of using camera pixels: "<< number_of_pixels_cam << endl;
 	file1.close();
 	////////////////////////////////// read file list
 	for ( int jl=0; jl < FolderList.size(); jl++) {

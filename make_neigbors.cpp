@@ -6,7 +6,7 @@
 #include <vector>
 using namespace std;
 string line;
-char neigh_filename[90];
+char neigh_filename[90], chmod_str[150];
 int number_of_pixels;
 double dist0, dist1;
 vector <int> trig37;
@@ -23,7 +23,6 @@ string make_neighbours(int iact_numb, string coord_file, int *exclud_clust, int 
 		while(!file.eof()) {
 			getline(file, line);
 			if(file.eof()){
-				number_of_pixels++;
 				cout << "number of pixels: " << number_of_pixels << endl;
 				break;
 			}
@@ -43,7 +42,7 @@ string make_neighbours(int iact_numb, string coord_file, int *exclud_clust, int 
 			for(int i = 0; i < 28; i++) {
 				//cout << int(xy_turn[j][0]) << "\t" << exclud_clust[i] << "\t" << int(xy_turn[j][7]) << "\t" << exclud_numb[i] << endl;
 				if((int(xy_turn[j][0]) == exclud_clust[i] && int(xy_turn[j][7]) == exclud_numb[i])) {
-					cout << exclud_clust[i] << "\t" << exclud_numb[i] << endl;
+					//cout << exclud_clust[i] << "\t" << exclud_numb[i] << endl;
 					xy_turn[j][3] = 1000;
 					xy_turn[j][4] = 1000;
 				}
@@ -84,6 +83,9 @@ string make_neighbours(int iact_numb, string coord_file, int *exclud_clust, int 
 				neigh.clear();
 			}
 		}
+		fout.close();
+		sprintf(chmod_str, "chmod 777 %s", neigh_filename);
+		system(chmod_str);
 	}
 	return neigh_filename;
 }
