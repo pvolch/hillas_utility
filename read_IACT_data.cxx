@@ -529,7 +529,7 @@ int main(int argc, char **argv)
 									{
 										if(bmp[coun][count] != 0) {
 											vector_pixel[0].push_back(count);
-											vector_pixel[1].push_back(coun);
+											vector_pixel[1].push_back(int(coun/2));
 											vector_pixel[4].push_back(bmp[coun][count]);
 											vector_pixel[2].push_back(x_pos[coun][count]);
 											vector_pixel[3].push_back(y_pos[coun][count]);
@@ -595,7 +595,7 @@ int main(int argc, char **argv)
 						for (int sc = 0; sc < 64; sc = sc + 2){
 							if(pix_number[sc][f]!=-1){
 								if(vector_background[pix_number[sc][f]].size()>0){
-									fout_background << f << "," << sc << ",";
+									fout_background << f << "," << int(sc/2) << ",";
 									for(jj = 0; jj <= vector_background[pix_number[sc][f]].size(); jj++){
 										fout_background << vector_background[pix_number[sc][f]][jj] << ",";
 									}
