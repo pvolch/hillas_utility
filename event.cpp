@@ -137,7 +137,7 @@ double con2;
 double con1;
 double amp_max;
 double size;
-double skewness;
+double skewness[3];
 double kurtosis;
 double a_axis[3];
 double b_axis[3];
@@ -187,6 +187,7 @@ void get_hillas(){
 	double U[3];
 	double V[3];
 	double bm[3];
+	double skew;
 	double amp2 = 0;
 	double longitudinal1 = 0;
 	double longitudinal2 = 0;
@@ -195,6 +196,7 @@ void get_hillas(){
 	double length_sig = 0;
 	//static double hillas[18]; //size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[0],
 	//azwidth[1], azwidth[2], miss[0], miss[1], miss[2], alpha[0], alpha[1], alpha[2]
+	skew = -1000;
 	size = 0;
 	for(int i = 0; i < pixel_amp.size(); i++) {
 		size+=pixel_amp[i];
@@ -320,17 +322,32 @@ void get_hillas(){
 			longitudinal3 = longitudinal3/size;
 			longitudinal4 = longitudinal4/size;
 			length_sig = pow(longitudinal2 - pow(longitudinal1, 2), 0.5);
-			skewness = (longitudinal3 - 3*longitudinal2*longitudinal1 + 2*pow(longitudinal1, 2))/pow(length_sig,3);
+			skew = (longitudinal3 - 3*longitudinal2*longitudinal1 + 2*pow(longitudinal1, 2))/pow(length_sig,3);
 			kurtosis = (longitudinal4 - 4*longitudinal3*longitudinal1 + 6*longitudinal2*pow(longitudinal1, 2) - 3*pow(longitudinal1, 4)/pow(length_sig,4));
-			if(((source_x - Xc[0] < 0 && skewness > 0) || (source_x - Xc[0] > 0 && skewness < 0))){
-				skewness = abs(skewness);
+			
+			if(((0 - Xc[0] < 0 && skew > 0) || (0 - Xc[0] > 0 && skew < 0))){
+			    skewness[0] = abs(skew);
 			}
 			else{
-				skewness = -abs(skewness);
+			    skewness[0] = -abs(skew);
+			}
+			if(((source_x - Xc[0] < 0 && skew > 0) || (source_x - Xc[0] > 0 && skew < 0))){
+			    skewness[1] = abs(skew);
+			}
+			else{
+			    skewness[1] = -abs(skew);
+			}
+			if(((-source_x - Xc[0] < 0 && skew > 0) || (-source_x - Xc[0] > 0 && skew < 0))){
+			    skewness[2] = abs(skew);
+			}
+			else{
+			    skewness[2] = -abs(skew);
 			}
 	}
 	else{
-		skewness = NAN;
+		skewness[0] = NAN;
+		skewness[1] = NAN;
+		skewness[2] = NAN;
 		kurtosis = NAN;
 	}
 
