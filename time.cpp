@@ -78,6 +78,18 @@ void set_time(string date, string tim){
 	//  cout << endl;
 }
 
+void set_time_binary(string date, int h, int min, int sec, int mls, int mks, int nan){
+	day = stoi(date.substr(0,2)); //day
+	month = stoi(date.substr(2,2)); //months
+	year = 2000 + stoi(date.substr(4,2)); //year
+	hour = h;
+	minute = min;
+	second = sec;
+	mlsec = mls;
+	mksec = mks;
+	nsec = nan;
+}
+
 void get_human_string_data(){
 	printf("%02d.%02d.%02d\n", day, month, year);
 }
