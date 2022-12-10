@@ -413,12 +413,13 @@ int main(int argc, char **argv)
 								cout << "outs " << i + 1 << " is ended" << endl;
 								break;
 							}
-							else if(idf==3033){
+							else if(idf==3033){ //проверка начала события
 								n = (int)buf[2];
 								//cout << n << endl;
 								size_t bufferSizeCluster = 142*n+3;
 								unsigned char * buf_clust = (unsigned char*) malloc(sizeof(char) * bufferSizeCluster);
 								fread(buf_clust, 1, bufferSizeCluster, ptrFile);
+								if((int)buf_clust[142*n] == (int)buf_clust[142*n + 1] && (int)buf_clust[142*n + 1] == (int)buf_clust[142*n + 2] &&  (int)buf_clust[142*n + 2] == 255){ //проверка конца события 255 255 255
 								for (int count = 0; count < 25; count++)
 								{
 									cluster[count]=0;
@@ -430,22 +431,20 @@ int main(int argc, char **argv)
 									}
 								}
 								unsigned int nsec_time = 0;
+								time_cam t;
+								/*cout << (int)buf_clust[(int)((q-1)*142 + 5)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 6)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 7)] << "\t" << 
+								(int)(buf_clust[(int)((q-1)*142 + 8)] + 256*buf_clust[(int)((q-1)*142 + 9)]) << "\t" << (int)(buf_clust[(int)((q-1)*142 + 10)] + 256*buf_clust[(int)((q-1)*142 + 11)]) << "\t" << 
+								(int)(buf_clust[(int)((q-1)*142 + 12)] + 256*buf_clust[(int)((q-1)*142 + 13)]) << endl;*/
+								t.set_time_binary(FolderList[jl], (int)buf_clust[5], (int)buf_clust[6], (int)buf_clust[7], (int)(buf_clust[8] + 256*buf_clust[9]), 
+																  (int)(buf_clust[10] + 256*buf_clust[11]), (int)(buf_clust[12] + 256*buf_clust[13]));
+								event_unix_time = t.get_unix_time();
+								nsec_time = t.get_nsec();
+								timet = t.char_human_string_time();
+								if(qqq == 0) {
+									time_0 = event_unix_time;
+								}
 								for( int q=1; q <= n; q++)
 								{
-									if(q == 1) {
-										time_cam t;
-										/*cout << (int)buf_clust[(int)((q-1)*142 + 5)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 6)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 7)] << "\t" << 
-										(int)(buf_clust[(int)((q-1)*142 + 8)] + 256*buf_clust[(int)((q-1)*142 + 9)]) << "\t" << (int)(buf_clust[(int)((q-1)*142 + 10)] + 256*buf_clust[(int)((q-1)*142 + 11)]) << "\t" << 
-										(int)(buf_clust[(int)((q-1)*142 + 12)] + 256*buf_clust[(int)((q-1)*142 + 13)]) << endl;*/
-										t.set_time_binary(FolderList[jl], (int)buf_clust[(int)((q-1)*142 + 5)], (int)buf_clust[(int)((q-1)*142 + 6)], (int)buf_clust[(int)((q-1)*142 + 7)],
-										(int)(buf_clust[(int)((q-1)*142 + 8)] + 256*buf_clust[(int)((q-1)*142 + 9)]), (int)(buf_clust[(int)((q-1)*142 + 10)] + 256*buf_clust[(int)((q-1)*142 + 11)]),
-										(int)(buf_clust[(int)((q-1)*142 + 12)] + 256*buf_clust[(int)((q-1)*142 + 13)]));
-										event_unix_time = t.get_unix_time();
-										nsec_time = t.get_nsec();
-										if(qqq == 0) {
-											time_0 = event_unix_time;
-										}
-									}
 									f= (int)buf_clust[(int)((q-1)*142)];
 									for(int ib=0;  ib<128; ib+=2) {
 										//unsigned char ddd =  buf_clust[(int)((q-1)*142 + 17 + ib)] + buf_clust[(int)((q-1)*142 + 17 + ib + 1)]*256;
@@ -545,7 +544,8 @@ int main(int argc, char **argv)
 										event.get_edge(Nsos_array);
 										//cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << " " << event.edge << endl;
 										if(save_background == 1){
-											fout << event.number << "\t" << event.number_of_pixels << "\t" << event.unix_time << "\t" << event.size << endl;
+											fout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
+											//cout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
 										}
 										vector_events.push_back(event);
 									}
@@ -559,6 +559,7 @@ int main(int argc, char **argv)
 									}
 								}
 								qqq++;
+							}
 							}
 						}
 						fclose(ptrFile);

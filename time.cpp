@@ -13,6 +13,7 @@ int second;
 int mlsec;
 int mksec;
 int nsec;
+char hum_time[150];
 
 time_cam(int Ut, int y, int mon, int d, int h, int min, int sec, int mls, int mks, int nan){
 	UTS = Ut;
@@ -100,6 +101,12 @@ void get_human_string_time(){
 
 void get_human_string_data_time(){
 	printf("%02d.%02d.%02d\t%02d:%02d:%02d,%03d.%03d.%03d\n", day, month, year, hour, minute, second, mlsec, mksec, nsec);
+}
+
+char* char_human_string_time(){
+	sprintf(hum_time, "%02d:%02d:%02d,%03d.%03d.%03d", hour, minute, second, mlsec, mksec, nsec);
+	return hum_time;
+	//printf("%02d:%02d:%02d,%03d.%03d.%03d\n", hour, minute, second, mlsec, mksec, nsec);
 }
 
 private:
