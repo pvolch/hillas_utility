@@ -14,7 +14,7 @@ vector <double> pixel_y;
 int portion;
 int number;
 double cr_sec;
-unsigned int nsec_time;
+string nsec_time;
 int number_of_pixels;
 double unix_time;
 double error_deg;
@@ -36,7 +36,7 @@ double weather;
 double alpha_c;
 double delta;
 int id;
-void set_event(int por, int event_number, double tim, unsigned int nst, vector<vector<double> > pixel_parameter){
+void set_event(int por, int event_number, double tim, string nst, vector<vector<double> > pixel_parameter){
 	portion = por;
 	number = event_number;
 	unix_time = tim;

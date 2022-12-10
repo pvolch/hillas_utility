@@ -28,6 +28,7 @@ double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
 int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1;
 char press;
+string nsec_time;
 bool clean_only, background_marker[64][25], save_background;
 
 double time_start_end_binary(string run_date, string path){
@@ -339,7 +340,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,unix_time,unix_time_after_dot(ns),delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,unix_time,unix_time_long_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			FILE * ptrFile = fopen(FileListOuts[i].c_str(), "r" );
@@ -430,7 +431,6 @@ int main(int argc, char **argv)
 										background_marker[coun][count]=0;
 									}
 								}
-								unsigned int nsec_time = 0;
 								time_cam t;
 								/*cout << (int)buf_clust[(int)((q-1)*142 + 5)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 6)] << "\t" << (int)buf_clust[(int)((q-1)*142 + 7)] << "\t" << 
 								(int)(buf_clust[(int)((q-1)*142 + 8)] + 256*buf_clust[(int)((q-1)*142 + 9)]) << "\t" << (int)(buf_clust[(int)((q-1)*142 + 10)] + 256*buf_clust[(int)((q-1)*142 + 11)]) << "\t" << 
@@ -438,7 +438,8 @@ int main(int argc, char **argv)
 								t.set_time_binary(FolderList[jl], (int)buf_clust[5], (int)buf_clust[6], (int)buf_clust[7], (int)(buf_clust[8] + 256*buf_clust[9]), 
 																  (int)(buf_clust[10] + 256*buf_clust[11]), (int)(buf_clust[12] + 256*buf_clust[13]));
 								event_unix_time = t.get_unix_time();
-								nsec_time = t.get_nsec();
+								nsec_time = t.full_unix_nsec();
+								//cout << nsec_time << endl;
 								timet = t.char_human_string_time();
 								if(qqq == 0) {
 									time_0 = event_unix_time;
@@ -571,7 +572,7 @@ int main(int argc, char **argv)
 					//"por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
 					//length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2],
 					//tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c"
-					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].unix_time << "," << vector_events[count].nsec_time << "," <<
+					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].unix_time << "," << setprecision(19) << vector_events[count].nsec_time << "," <<
 					        setprecision(2) << vector_events[count].delta << "," << setprecision(2) << vector_events[count].error_deg << "," << setprecision(5) << vector_events[count].tel_az  << "," <<
 					        setprecision(3) << vector_events[count].tel_el << "," << setprecision(5) << vector_events[count].source_az << "," << setprecision(3) << vector_events[count].source_el << "," <<
 					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," <<

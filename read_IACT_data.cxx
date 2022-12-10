@@ -28,6 +28,7 @@ double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
 int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1;
 char press;
+string nsec_time;
 bool clean_only, background_marker[64][25], save_background;
 
 double time_start_end(string run_date, string path){
@@ -339,7 +340,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,unix_time,unix_time_after_dot(ns),delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,unix_time,unix_time_long_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			ifstream DataFileOuts;
@@ -420,7 +421,6 @@ int main(int argc, char **argv)
 										background_marker[coun][count]=0;
 									}
 								}
-								unsigned int nsec_time = 0;
 								for( int q=1; q <= n; q++)
 								{
 									getline(DataFileOuts, srr[q]);
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
 										t.set_time(FolderList[jl], timet);
 										//cout <<  date[0] << "\t" << date[1] << "\t" << date[2] << "\t" << date[3] << ":" <<  date[4] << ":" << date[5] << "," << date[6] << "." << date[7] << "."<< date[8] << endl;
 										event_unix_time = t.get_unix_time();
-										nsec_time = t.get_nsec();
+										nsec_time = t.full_unix_nsec();
 										//cout <<setprecision(6) << fixed << event_unix_time << "\t" << a->GetSec() << "." << a->GetNanoSec() << endl;
 										if(qqq == 0) {
 											//cout << qqq << "\t" << event_unix_time << endl;

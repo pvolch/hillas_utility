@@ -14,6 +14,7 @@ int mlsec;
 int mksec;
 int nsec;
 char hum_time[150];
+string unix_ling_time;
 
 time_cam(int Ut, int y, int mon, int d, int h, int min, int sec, int mls, int mks, int nan){
 	UTS = Ut;
@@ -53,6 +54,29 @@ double get_unix_time() {
 
 unsigned int get_nsec(){
 	return mlsec*1e6 + mksec*1e3 + nsec;
+}
+
+string full_unix_nsec(){
+	char unix_ling_char[20];
+	time_t rawtime;
+	struct tm * timeinfo;
+	/* get current timeinfo: */
+	time ( &rawtime ); //or: rawtime = time(0);
+	/* convert to struct: */
+	timeinfo = localtime ( &rawtime );
+	//sprintf(unix_ling_time, "%02d:%02d:%02d,%03d.%03d.%03d", hour, minute, second, mlsec, mksec, nsec);
+	//cout << mktime (timeinfo) << endl;
+	/* now modify the timeinfo to the given date: */
+	timeinfo->tm_year   = year - 1900;//year = 20, 2020 - 1900
+	timeinfo->tm_mon    = month - 1;//months since January - [0,11]
+	timeinfo->tm_mday   = day;      //day of the month - [1,31]
+	timeinfo->tm_hour   = hour+UTS;     //hours since midnight - [0,23]
+	timeinfo->tm_min    = minute;      //minutes after the hour - [0,59]
+	timeinfo->tm_sec    = second;      //seconds after the minute - [0,59]
+	//cout << mktime(timeinfo) << "\t" << mlsec << "\t" << mksec << "\t" << nsec << endl;
+	sprintf(unix_ling_char, "%010d%03d%03d%03d", mktime(timeinfo), mlsec, mksec, nsec);
+	unix_ling_time = unix_ling_char;
+	return unix_ling_time;
 }
 
 void set_time(string date, string tim){
