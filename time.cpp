@@ -128,7 +128,7 @@ void get_human_string_data_time(){
 }
 
 char* char_human_string_time(){
-	sprintf(hum_time, "%02d:%02d:%02d,%03d.%03d.%03d", hour, minute, second, mlsec, mksec, nsec);
+	sprintf(hum_time, "%02d:%02d:%02d:%03d:%03d:%03d", hour, minute, second, mlsec, mksec, nsec);
 	return hum_time;
 	//printf("%02d:%02d:%02d,%03d.%03d.%03d\n", hour, minute, second, mlsec, mksec, nsec);
 }

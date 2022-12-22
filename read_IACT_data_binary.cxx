@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,unix_time,unix_time_long_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,time,unix_time_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			FILE * ptrFile = fopen(FileListOuts[i].c_str(), "r" );
@@ -531,7 +531,7 @@ int main(int argc, char **argv)
 										}
 									}
 								}
-								event.set_event(i+1, (int)(buf_clust[1] + buf_clust[2]*256 + buf_clust[3]*256*256 + buf_clust[4]*256*256*256), event_unix_time, nsec_time, vector_pixel);
+								event.set_event(i+1, (int)(buf_clust[1] + buf_clust[2]*256 + buf_clust[3]*256*256 + buf_clust[4]*256*256*256), event_unix_time, nsec_time, timet, vector_pixel);
 								//cout << (int)(buf_clust[(int)((q-1)*142 + 1)] + buf_clust[(int)((q-1)*142 + 5)]*256 + buf_clust[(int)((q-1)*142 + 3)]*256*256 + buf_clust[(int)((q-1)*142 + 4)]*256*256*256) << endl;
 								//event.ccd_id(vector_ccd);
 								if(time_0 + 12. <= event.unix_time && event.number_of_pixels > 3) {
@@ -572,7 +572,7 @@ int main(int argc, char **argv)
 					//"por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
 					//length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2],
 					//tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c"
-					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].unix_time << "," << setprecision(19) << vector_events[count].nsec_time << "," <<
+					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].human_time << "," << setprecision(19) << vector_events[count].nsec_time << "," <<
 					        setprecision(2) << vector_events[count].delta << "," << setprecision(2) << vector_events[count].error_deg << "," << setprecision(5) << vector_events[count].tel_az  << "," <<
 					        setprecision(3) << vector_events[count].tel_el << "," << setprecision(5) << vector_events[count].source_az << "," << setprecision(3) << vector_events[count].source_el << "," <<
 					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," <<

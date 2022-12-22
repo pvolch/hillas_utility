@@ -23,7 +23,7 @@ string folder;
 	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
 int co, number_of_pixels_cam, pix_number[64][25];
 double pedp, sigp, b[64][25],bmp[64][25],ped[64][25],sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
-string str,srr[25], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
+string str,srr[25], timet, timet_csv, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
 double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25], tim_start = 0, tim_end = 0, event_delay;
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
 int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1;
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,unix_time,unix_time_long_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,time,unix_time_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			ifstream DataFileOuts;
@@ -434,7 +434,7 @@ int main(int argc, char **argv)
 										//cout <<  date[0] << "\t" << date[1] << "\t" << date[2] << "\t" << date[3] << ":" <<  date[4] << ":" << date[5] << "," << date[6] << "." << date[7] << "."<< date[8] << endl;
 										event_unix_time = t.get_unix_time();
 										nsec_time = t.full_unix_nsec();
-										//cout <<setprecision(6) << fixed << event_unix_time << "\t" << a->GetSec() << "." << a->GetNanoSec() << endl;
+										timet_csv = t.char_human_string_time();
 										if(qqq == 0) {
 											//cout << qqq << "\t" << event_unix_time << endl;
 											time_0 = event_unix_time;
@@ -536,7 +536,7 @@ int main(int argc, char **argv)
 										}
 									}
 								}
-								event.set_event(i+1, num, event_unix_time, nsec_time, vector_pixel);
+								event.set_event(i+1, num, event_unix_time, nsec_time, timet_csv, vector_pixel);
 								//event.ccd_id(vector_ccd);
 								if(time_0 + 12. <= event.unix_time && event.number_of_pixels > 3) {
 									//cout << time_0 << "\t" << event_unix_time << endl;
@@ -549,7 +549,7 @@ int main(int argc, char **argv)
 										event.get_edge(Nsos_array);
 										//cout << event.portion << "\t" << event.number << "\t" << event.number_of_pixels << "\t" << FolderList[jl].c_str() << "." << RunNumbList[jl].c_str() << " " << timet << "\t"  << event.size  << "\t" << event.star << " " << event.edge << endl;
 										if(save_background == 1){
-											fout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
+											fout << event.number << "\t" << event.number_of_pixels << "\t" << timet_csv << "\t" << event.size << endl;
 										}
 										vector_events.push_back(event);
 									}
@@ -570,10 +570,10 @@ int main(int argc, char **argv)
 				fout.close();
 				double por_cr = write_cr_file(vector_events);
 				for(int count = 0; count < vector_events.size(); count++) {
-					//"por, event_numb, unix_time, unix time after dot(ns), delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
+					//"por, event_numb, time, unix time, delta_time, error_deg, tel_az, tel_el, source_az, source_el, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2,
 					//length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], a_axis, b_axis, a_dist[1], b_dist[1], a_dist[2], b_dist[2],
 					//tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c"
-					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].unix_time << "," << vector_events[count].nsec_time << "," <<
+					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].human_time << "," << vector_events[count].nsec_time << "," <<
 					        setprecision(2) << vector_events[count].delta << "," << setprecision(2) << vector_events[count].error_deg << "," << setprecision(5) << vector_events[count].tel_az  << "," <<
 					        setprecision(3) << vector_events[count].tel_el << "," << setprecision(5) << vector_events[count].source_az << "," << setprecision(3) << vector_events[count].source_el << "," <<
 					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," <<

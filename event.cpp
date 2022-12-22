@@ -15,6 +15,7 @@ int portion;
 int number;
 double cr_sec;
 string nsec_time;
+string human_time;
 int number_of_pixels;
 double unix_time;
 double error_deg;
@@ -36,11 +37,12 @@ double weather;
 double alpha_c;
 double delta;
 int id;
-void set_event(int por, int event_number, double tim, string nst, vector<vector<double> > pixel_parameter){
+void set_event(int por, int event_number, double tim, string nst, string timet, vector<vector<double> > pixel_parameter){
 	portion = por;
 	number = event_number;
 	unix_time = tim;
 	nsec_time = nst;
+	human_time = timet;
 	for (int i = 0; i < pixel_parameter[0].size(); i++) {
 		pixel_cluster.push_back(pixel_parameter[0][i]);
 		pixel_number.push_back(pixel_parameter[1][i]);
