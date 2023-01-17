@@ -15,18 +15,19 @@
 #include "event.cpp"
 #include "CR.cpp"
 #include "make_neigbors.cpp"
+#include "islands.cpp"
 #include <sys/stat.h>
 
 using namespace std;
 char fou[190],save_background_str[190], month_year[70], fou_hillas[190],folder_outs[150], background_folder[190], clean_folder[190], param_path_str[150];
 string folder;
-	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
+	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], islands[64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
 int co, number_of_pixels_cam, pix_number[64][25];
 double pedp, sigp, b[64][25],bmp[64][25],ped[64][25],sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
 string str,srr[25], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
 double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25], tim_start = 0, tim_end = 0, event_delay;
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
-int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1;
+int exclud_clust[28] = {0}, exclud_numb[28] = {0}, cleaning = -1, ped_param = -1, use_brightest_island;
 char press;
 string nsec_time;
 bool clean_only, background_marker[64][25], save_background;
@@ -112,6 +113,9 @@ int main(int argc, char **argv)
 	getline(pParam, line);
 	istringstream ist(line);
 	ist >> datt >> datt >> edge1 >> edge2;
+	getline(pParam, line);
+	istringstream ist30(line);
+	ist30 >> datt >> use_brightest_island;
 	getline(pParam, line);
 	istringstream ist3(line);
 	ist3 >> datt >> datt;
@@ -340,7 +344,7 @@ int main(int argc, char **argv)
 		sprintf(fou_hillas, "%s/%s.%s_out_hillas_%02.0f_%02.1f%s.csv", folder_outs, FolderList[jl].c_str(),RunNumbList[jl].c_str(), edge1, edge2, cleaning_type.c_str());
 		cout << folder_outs << endl;
 		ofstream fout_hillas(fou_hillas);
-		fout_hillas << "por,event_numb,time,unix_time_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,size,Xc[0],Yc[0],con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
+		fout_hillas << "por,event_numb,time,unix_time_ns,delta_time,error_deg,tel_az,tel_el,source_az,source_el,CR100phe,CR_portion,numb_pix,num_islands,size,Xc[0],Yc[0],con_selected_island,con2,length[0],width[0],dist[0],dist[1],dist[2],skewness[0],skewness[1],skewness[2],kurtosis,alpha[0],alpha[1],alpha[2],a_axis,b_axis,a_dist[1],b_dist[1],a_dist[2],b_dist[2],tel_ra,tel_dec,source_ra,source_dec,source_x,source_y,tracking,good,star,edge,weather_mark,alpha_c" << endl;
 		for ( int i=0; i < List_size; i++) {
 			cout << i << "\t" << FileListOuts[i] << endl;
 			FILE * ptrFile = fopen(FileListOuts[i].c_str(), "r" );
@@ -502,7 +506,6 @@ int main(int argc, char **argv)
 											}
 										}
 									}
-									
 									for (int sc = 0; sc < 64; sc = sc + 2)
 									{
 										if(background_marker[sc][f] == 0 && bmp[sc][f] != 0)
@@ -515,8 +518,14 @@ int main(int argc, char **argv)
 										}
 									}
 								}
-								//cout << "ok" << endl;
 								Events event;
+								get_islands(bmp, kkk, pos, islands);
+								if(use_brightest_island == 1){
+									event.set_con_and_numb_islands(islands[0][0], get_bightest_island(bmp, islands));
+								}
+								else{
+									event.set_con_and_numb_islands(islands[0][0], 1);
+								}
 								vector<vector<double> > vector_pixel( 5, vector<double> (0));
 								for (int count = 0; count < 25; count++)
 								{
@@ -531,6 +540,7 @@ int main(int argc, char **argv)
 										}
 									}
 								}
+								//cout << event.num_islands << endl;
 								event.set_event(i+1, (int)(buf_clust[1] + buf_clust[2]*256 + buf_clust[3]*256*256 + buf_clust[4]*256*256*256), event_unix_time, nsec_time, timet, vector_pixel);
 								//cout << (int)(buf_clust[(int)((q-1)*142 + 1)] + buf_clust[(int)((q-1)*142 + 5)]*256 + buf_clust[(int)((q-1)*142 + 3)]*256*256 + buf_clust[(int)((q-1)*142 + 4)]*256*256*256) << endl;
 								//event.ccd_id(vector_ccd);
@@ -548,6 +558,7 @@ int main(int argc, char **argv)
 											fout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
 											//cout << event.number << "\t" << event.number_of_pixels << "\t" << timet << "\t" << event.size << endl;
 										}
+										
 										vector_events.push_back(event);
 									}
 									if(save_background == 1){
@@ -575,8 +586,8 @@ int main(int argc, char **argv)
 					fout_hillas << fixed << vector_events[count].portion << "," << vector_events[count].number << "," << setprecision(6) << vector_events[count].human_time << "," << setprecision(19) << vector_events[count].nsec_time << "," <<
 					        setprecision(2) << vector_events[count].delta << "," << setprecision(2) << vector_events[count].error_deg << "," << setprecision(5) << vector_events[count].tel_az  << "," <<
 					        setprecision(3) << vector_events[count].tel_el << "," << setprecision(5) << vector_events[count].source_az << "," << setprecision(3) << vector_events[count].source_el << "," <<
-					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," <<
-					        setprecision(2) << vector_events[count].size << "," << setprecision(6) << vector_events[count].Xc[0] << "," << setprecision(6) << vector_events[count].Yc[0] << "," <<
+					        setprecision(2) << vector_events[count].cr_sec << "," << setprecision(2) << por_cr << "," << vector_events[count].number_of_pixels << "," << vector_events[count].num_islands << "," <<
+					        setprecision(2) << vector_events[count].size << "," << setprecision(6) << vector_events[count].Xc[0] << "," << setprecision(6) << vector_events[count].Yc[0] << "," << vector_events[count].con_brightest_island << "," <<
 					        setprecision(2) << vector_events[count].con2 << "," << setprecision(6) << vector_events[count].length[0] << "," <<
 					        vector_events[count].width[0] << "," << vector_events[count].dist[0] << "," << vector_events[count].dist[1] << "," <<
 					        vector_events[count].dist[2] << "," << setprecision(6) << vector_events[count].skewness[0] << "," <<

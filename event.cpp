@@ -139,6 +139,8 @@ double con2;
 double con1;
 double amp_max;
 double size;
+double con_brightest_island;
+int num_islands;
 double skewness[3];
 double kurtosis;
 double a_axis[3];
@@ -173,6 +175,11 @@ void to_deg(){
 	b_dist[2] = 0.1206*b_dist[2];
 	kurtosis = 0.1206*kurtosis;
 };
+
+void set_con_and_numb_islands(int num, double con_brightest){
+	num_islands = num;
+	con_brightest_island = con_brightest;
+}
 
 void set_cr(double countrate){
 	cr_sec = countrate;
