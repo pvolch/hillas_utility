@@ -23,7 +23,7 @@ char fou[190],save_background_str[190], month_year[70], fou_hillas[190],folder_o
 string folder;
 	int bsm, cch, ch,ff,f,num,por,trig,n,kkk[6][64][25],pos[6][64][25], islands[64][25], Nsos_array[64][25], cluster[25], nn, anti_f[25], jj, jjj,j, x, gg;
 int co, number_of_pixels_cam, pix_number[64][25];
-double pedp, sigp, b[64][25],bmp[64][25],ped[64][25],sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
+double pedp, sigp, b[64][25],bmp[64][25],ped[64][25],sig[64][25], event_sig[64][25], e[25][64], sens[25][64], gain, k_adc, ecode, rel_sens, time_0 = 1, event_unix_time = 0;
 string str,srr[25], timet, ped_folder[4] = {"peds", "peds.m3s", "peds.mediana","peds_median_my"}, data_path, out_data_path, hillas_table_name, clean_out_name, param_wobble_path, cleaning_type;
 double hour, minute, sec, mksec, mlsec, nsec, time0, x_pos[64][25], y_pos[64][25], tim_start = 0, tim_end = 0, event_delay;
 map <int, string> calendar = {{1, "jan"}, {2, "feb"},{3, "mar"},{4, "apr"},{5, "may"},{6, "jun"},{7, "jul"},{8, "aug"},{9, "sep"},{10, "oct"},{11, "nov"},{12, "dec"}};
@@ -433,6 +433,7 @@ int main(int argc, char **argv)
 										b[coun][count]=0;
 										bmp[coun][count]=0;
 										background_marker[coun][count]=0;
+										event_sig[coun][count]=10000;
 									}
 								}
 								time_cam t;
@@ -461,16 +462,19 @@ int main(int argc, char **argv)
 											if((bmp[ij][f]) >= 3000) {
 												bmp[ij][f] = (bmp[ij+1][f] - ped[ij+1][f])/(e[f][ij+1]*sens[f][ij+1]);
 												//bmp[ij+1][f] = (bmp[ij+1][f] - ped[ij+1][f])/(e[f][ij+1]*sens[f][ij+1]);
-												sig[ij][f] = sig[ij+1][f];
+												event_sig[ij][f] = sig[ij+1][f];
 											}
 											else {
 												bmp[ij][f] = (bmp[ij][f] - ped[ij][f])/(e[f][ij]*sens[f][ij]);
+												event_sig[ij][f] = sig[ij][f];
 												//bmp[ij+1][f] = (bmp[ij+1][f] - ped[ij+1][f])/(e[f][ij+1]*sens[f][ij+1]);
 											}
 										}
 										else{
 											bmp[ij][f] = 0;
 											bmp[ij+1][f] = 0;
+											//event_sig[ij][f] = 10000;
+											//event_sig[ij+1][f] = 10000;
 										}
 										//sig[ij][f] = sig[ij][f]/(e[f][ij]*sens[f][ij]);
 										//sig[ij+1][f] = sig[ij+1][f]/(e[f][ij+1]*sens[f][ij+1]);
@@ -478,35 +482,36 @@ int main(int argc, char **argv)
 								}
 								for(f = 1; f <= 25; f++)
 								{
-									for (int sc = 0; sc < 64; sc = sc + 2)
+									for (int sc = 0; sc < 64; sc += 2)
 									{
-										if(bmp[sc][f]>edge1*sig[sc][f])
+										//cout << f << "\t" << sc << "\t" << event_sig[sc][f] << endl;
+										if(bmp[sc][f]>edge1*event_sig[sc][f])
 										{
-											if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge2*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
-												(bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge2*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
-												(bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge2*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
-												(bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge2*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
-												(bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge2*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
-												(bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge2*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
+											if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge2*event_sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
+												(bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge2*event_sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
+												(bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge2*event_sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
+												(bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge2*event_sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
+												(bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge2*event_sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
+												(bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge2*event_sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
 											{
 												background_marker[sc][f] = 1;
 											}
 
 										}
-										else if(bmp[sc][f]>edge2*sig[sc][f])
+										else if(bmp[sc][f]>edge2*event_sig[sc][f])
 										{
-											if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge1*sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
-												(bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge1*sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
-												(bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge1*sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
-												(bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge1*sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
-												(bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge1*sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
-												(bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge1*sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
+											if((bmp[pos[0][sc][f]][kkk[0][sc][f]]>edge1*event_sig[pos[0][sc][f]][kkk[0][sc][f]] && bmp[pos[0][sc][f]][kkk[0][sc][f]]>0) ||
+												(bmp[pos[1][sc][f]][kkk[1][sc][f]]>edge1*event_sig[pos[1][sc][f]][kkk[1][sc][f]] && bmp[pos[1][sc][f]][kkk[1][sc][f]]>0) ||
+												(bmp[pos[2][sc][f]][kkk[2][sc][f]]>edge1*event_sig[pos[2][sc][f]][kkk[2][sc][f]] && bmp[pos[2][sc][f]][kkk[2][sc][f]]>0) ||
+												(bmp[pos[3][sc][f]][kkk[3][sc][f]]>edge1*event_sig[pos[3][sc][f]][kkk[3][sc][f]] && bmp[pos[3][sc][f]][kkk[3][sc][f]]>0) ||
+												(bmp[pos[4][sc][f]][kkk[4][sc][f]]>edge1*event_sig[pos[4][sc][f]][kkk[4][sc][f]] && bmp[pos[4][sc][f]][kkk[4][sc][f]]>0) ||
+												(bmp[pos[5][sc][f]][kkk[5][sc][f]]>edge1*event_sig[pos[5][sc][f]][kkk[5][sc][f]] && bmp[pos[5][sc][f]][kkk[5][sc][f]]>0))
 											{
 												background_marker[sc][f] = 1;
 											}
 										}
 									}
-									for (int sc = 0; sc < 64; sc = sc + 2)
+									for (int sc = 0; sc < 64; sc += 2)
 									{
 										if(background_marker[sc][f] == 0 && bmp[sc][f] != 0)
 										{
