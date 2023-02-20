@@ -332,6 +332,7 @@ int main(int argc, char **argv)
 		}
 		////////////////////////////////////////////////////////////////////////
 		vector<vector<double> > vector_ccd = read_ccd(vector_wobble, tim_start, tim_end, clean_only);
+		vector_wobble.clear();
 		int ccd_id = 0;
 		cout << "\t\tnumber of written ccd rows: " << vector_ccd[0].size() << endl;
 		////////////////////////////////////////////////////////////////////////
@@ -621,13 +622,13 @@ int main(int argc, char **argv)
 					}
 				}
 				fout_background.close();
-						
+				vector_background.clear();		
 //por, event_numb, unix_time, delta_time, error_deg, altitude, CR5sec, CR_portion, numb_pix, size, Xc[0],Yc[0], con2, length[0], width[0], dist[0], dist[1], dist[2], azwidth[1], azwidth[2], miss[1], miss[2], alpha[0], alpha[1], alpha[2], source_x, source_y, source_ra, source_dec, tracking, good
 				vector_events.clear();
 			}
 		}
 		fout_hillas.close();
-
+		vector_ccd.clear();
 	}
 	return 0;
 }

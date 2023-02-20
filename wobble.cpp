@@ -12,11 +12,11 @@ double delta1, delta2;
 int UTS = 3, t_start, t_end;
 double inf = numeric_limits<double>::infinity();
 char BashCommandFolder[150];
-vector <double> wobble_time;
-vector <string> wobble_path;
 
 vector <string> wobble(string param_wobble_path, double time_start, double time_end) {
 	vector <string> vector_path;
+	vector <double> wobble_time;
+	vector <string> wobble_path;
 	sprintf(BashCommandFolder, "%s%s%s", "readlink -e ", param_wobble_path.c_str(),"pointing_data_* > List_wobble");
 	//cout << BashCommandFolder << endl;
 	system(BashCommandFolder);
@@ -74,6 +74,8 @@ vector <string> wobble(string param_wobble_path, double time_start, double time_
 		if(delta1 > 7200) {cout << "wobble.cpp: WARNING: pointing data file started with delay > 2h from pointing name file" << endl;}
 	}
 	fFileList.close();
+	wobble_time.clear();
+	wobble_path.clear();
 	return vector_path;
 }
 
